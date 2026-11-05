@@ -29,3 +29,16 @@
 @media(max-width:950px) and (min-width:701px){.page{padding:35px}.story-page{padding-left:38px}.photo-page{padding-right:38px}.story-page h2{font-size:37px}.story-page p{font-size:18px}}
 @media(max-width:700px){#reader{padding:0 25px}.spread{display:block;border-radius:5px 13px 13px 5px;margin-left:5px}.spread:after{left:0;right:auto;width:20px;background:linear-gradient(90deg,#683d332e,transparent)}.spread:before{inset:-7px -7px -15px}.page{min-height:0;background-color:transparent;box-shadow:none}.photo-page{padding:30px 28px 0 34px;border-radius:5px 13px 0 0}.photo-page:after{display:none}.story-page{padding:22px 28px 48px 34px;border-radius:0 0 13px 5px}.story-page:before{display:none}.memory-photo{aspect-ratio:1.4;max-width:270px;border-width:9px;border-bottom-width:24px}.photo-page>.hand{font-size:22px;margin-top:18px}.story-page h2{font-size:34px;margin:10px 0 18px}.story-page p{font-size:18px;line-height:1.6;margin-bottom:14px}.turn-sheet{width:100%;border-radius:5px 13px 13px 5px!important}.turn-sheet.forward,.turn-sheet.backward{left:0;right:0;transform-origin:left center}.turn-sheet .sheet-content{display:block;background:var(--paper);padding:0;border:0;box-shadow:none;min-height:100%}.navigation{gap:12px}#dots{gap:2px}.reader-heading>span{font-size:16px}footer{flex-wrap:wrap}.cover-border:before,.cover-border:after{font-size:20px;bottom:20px}}
 @media(prefers-reduced-motion:reduce){.round:hover:not(:disabled){transform:none}}
+/* Un girasol dibujado para la dedicatoria de la portada. */
+.cover-photo.sunflower-card{padding:5px 10px 13px;background:#fff0e6;overflow:visible}
+.cover-photo .sunflower{display:block;width:140px;max-width:100%;height:auto;margin:0 auto;overflow:visible}
+.sunflower-sway{transform-origin:82px 143px;animation:sunflower-sway 5s ease-in-out infinite}
+.sunflower-head{transform-origin:80px 62px;animation:sunflower-nod 5s ease-in-out infinite}
+.sun-leaf{transform-box:fill-box;transform-origin:90% 90%;animation:sunflower-leaf 5s ease-in-out infinite}
+.leaf-right{transform-origin:5% 90%;animation-delay:-2s}
+.cover-photo .sunflower-caption{display:block;font:15px/1.25 'La Belle Aurore',cursive;color:#82425d;margin-top:3px}
+@keyframes sunflower-sway{0%,100%{transform:rotate(-4deg)}50%{transform:rotate(4deg)}}
+@keyframes sunflower-nod{0%,100%{transform:rotate(3deg)}50%{transform:rotate(-5deg)}}
+@keyframes sunflower-leaf{0%,100%{transform:rotate(0deg)}50%{transform:rotate(-7deg)}}
+@media(max-width:700px){.cover-photo .sunflower{width:120px}.cover-photo .sunflower-caption{font-size:14px}}
+@media(prefers-reduced-motion:reduce){.sunflower-sway,.sunflower-head,.sun-leaf{animation:none}}
