@@ -54,3 +54,10 @@
 .cover-border:after{display:none}.under-book{font-size:16px;bottom:-10px;padding:0 5px}.little-note{margin-top:22px}
 @media(max-width:700px){.cover-photo.sunflower-card{width:165px}.cover-photo .sunflower{width:135px}.cover-photo .sunflower-caption{font-size:16px}.cover-tab{width:68px;height:68px}.under-book{font-size:14px;bottom:-12px}}
 @media(prefers-reduced-motion:reduce){.cover-tab:hover{transform:none}}
+/* Las hojas móviles deben cubrir la encuadernación rosada. */
+@media(max-width:700px){
+ .spread{background-color:var(--paper)}
+ .spread>.photo-page,.spread>.story-page{background-color:var(--paper)}
+ .spread>.photo-page{border-radius:5px 13px 0 0}
+ .spread>.story-page{border-radius:0 0 13px 5px}
+}
