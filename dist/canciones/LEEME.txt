@@ -1,0 +1,5 @@
+Pon aqui sus canciones en formato MP3 (recomendado), M4A, OGG o WAV.
+Usa el titulo de la cancion como nombre del archivo.
+Cuando termines, dile a Codex: Ya puse las canciones.
+Codex actualizara la lista y el enlace del libro para que puedan escucharse desde otros dispositivos.
+El boton Anadir canciones de la portada sirve para pruebas temporales durante esa visita.
