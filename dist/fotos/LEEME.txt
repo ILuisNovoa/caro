@@ -1,0 +1,5 @@
+Pon una foto JPG, PNG o WEBP en cada carpeta capitulo-1 hasta capitulo-5.
+Cada carpeta corresponde a una parte del libro, en orden.
+Puedes conservar el nombre original de la foto.
+De momento se muestra una foto por capitulo. Si pones varias, avisa a Codex para preparar una galeria.
+Cuando termines, dile a Codex: Ya puse las fotos.
