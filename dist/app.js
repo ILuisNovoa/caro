@@ -1,7 +1,45 @@
 const $=s=>document.querySelector(s);let chapter=0,selected=-1,tracks=[...(window.CANCIONES||[])],photos={...(window.FOTOS||{})};const audio=$('#audio');audio.volume=.6;
 const chapters=[{title:'Y entonces, llegaste tú.',caption:'Donde empezó todo...',text:['Hay días que parecen uno más, hasta que alguien llega y lo cambia todo.','Aquí irá la historia de cómo nos conocimos: esa primera conversación, los nervios y el momento en que empezamos a ser nosotros.']},{title:'Mi plan favorito eres tú.',caption:'Contigo, cualquier lugar.',text:['No siempre hace falta un viaje enorme. A veces basta una caminata, algo rico y tu mano junto a la mía.','Aquí guardaremos nuestra primera salida y esos detalles que todavía nos hacen sonreír.']},{title:'Lo bonito de lo cotidiano.',caption:'Nuestros pequeños grandes momentos.',text:['Las fotos movidas. Las risas sin motivo. Los abrazos que arreglan el día.','Esta página es para esos momentos que quizá no salen perfectos en una foto, pero se quedan para siempre.']},{title:'Todavía nos queda tanto.',caption:'La mejor parte sigue por venir.',text:['Lugares por conocer, canciones por dedicar y muchos recuerdos que todavía no tienen foto.','Y entre todo lo que viene, hay algo que tengo claro: quiero vivirlo contigo.']},{title:'Esta página es solo para ti.',caption:'Mi lugar favorito, siempre.',text:['Hay cosas que merecen decirse despacito. Esta es una de ellas.']}];
 function toast(t){$('#toast').textContent=t;$('#toast').classList.add('show');clearTimeout(window.toastTimer);window.toastTimer=setTimeout(()=>$('#toast').classList.remove('show'),3500)}
-function render(){const c=chapters[chapter];$('#chapterLabel').textContent=`CAPÍTULO ${chapter+1}`;$('#chapterTitle').textContent=c.title;$('#chapterText').replaceChildren(...c.text.map(t=>{const p=document.createElement('p');p.textContent=t;return p}));$('#photoCaption').textContent=c.caption;$('#chapterCount').textContent=`${chapter+1} / ${chapters.length}`;$('#pageNumber').textContent=String((chapter+1)*2).padStart(2,'0');$('#prev').disabled=chapter===0;$('#next').disabled=chapter===chapters.length-1;$('#letter').hidden=chapter!==4;$('#letterText').hidden=true;$('#memoryImage').hidden=!photos[chapter];$('#photoEmpty').hidden=!!photos[chapter];if(photos[chapter])$('#memoryImage').src=photos[chapter];$('#dots').replaceChildren(...chapters.map((_,i)=>{let b=document.createElement('button');b.className=i===chapter?'active':'';b.ariaLabel=`Ir al capítulo ${i+1}`;b.setAttribute('aria-current',i===chapter?'page':'false');b.onclick=()=>go(i);return b}));}
+function render() {
+ const current = chapters[chapter];
+ const spread = $('#spread');
+ spread.dataset.author = current.color || '';
+ $('#chapterLabel').textContent = current.author ? `Un recuerdo de ${current.author}` : `CAPÍTULO ${chapter + 1}`;
+ $('#chapterTitle').textContent = current.title;
+ $('#chapterText').replaceChildren(...current.text.map(text => {
+   const paragraph = document.createElement('p');
+   paragraph.textContent = text;
+   return paragraph;
+ }));
+ $('#photoCaption').textContent = current.caption;
+ $('#chapterCount').textContent = `${chapter + 1} / ${chapters.length}`;
+ $('#pageNumber').textContent = String((chapter + 1) * 2).padStart(2, '0');
+ $('#prev').disabled = chapter === 0;
+ $('#next').disabled = chapter === chapters.length - 1;
+ $('#letter').hidden = chapter !== 4;
+ $('#letterText').hidden = true;
+ const photo = current.id ? current.photo : photos[chapter];
+ $('#memoryImage').hidden = !photo;
+ $('#photoEmpty').hidden = Boolean(photo);
+ if (photo) $('#memoryImage').src = photo;
+ else $('#memoryImage').removeAttribute('src');
+ $('#photoEmpty b').textContent = current.id ? 'Un recuerdo para guardar' : 'Una foto, mil recuerdos';
+ $('#photoEmpty small').textContent = current.id ? current.author : 'Toca para poner una foto de ustedes';
+ const remove = $('#deleteMemory');
+ if (remove) {
+   remove.hidden = !current.id || current.color !== window.bookUser?.role;
+   remove.dataset.id = current.id || '';
+ }
+ $('#dots').replaceChildren(...chapters.map((item, index) => {
+   const button = document.createElement('button');
+   button.className = index === chapter ? 'active' : '';
+   button.ariaLabel = `Ir a ${item.title}`;
+   button.setAttribute('aria-current', index === chapter ? 'page' : 'false');
+   button.onclick = () => go(index);
+   return button;
+ }));
+}
 let busy=false;
 const reducedMotion=()=>window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 async function go(i){
@@ -10,6 +48,7 @@ async function go(i){
  if(reducedMotion()||!spread.animate){chapter=i;render();return}
  busy=true;spread.setAttribute('aria-busy','true');
  const sheet=document.createElement('div');sheet.className='turn-sheet '+(forward?'forward':'backward');sheet.setAttribute('aria-hidden','true');sheet.inert=true;
+ sheet.style.setProperty('--paper',getComputedStyle(spread).getPropertyValue('--paper'));
  const old=(mobile?spread:$(forward?'.story-page':'.photo-page')).cloneNode(true);
  old.querySelectorAll('[id]').forEach(el=>el.removeAttribute('id'));old.removeAttribute('id');old.classList.remove('spread');old.classList.add('sheet-content');sheet.append(old);
  chapter=i;render();spread.append(sheet);
@@ -25,3 +64,26 @@ $('#audioFiles').onchange=e=>{const files=[...e.target.files].filter(f=>f.type.s
 
 if(tracks.length){renderTracks();document.querySelector('.local-note').textContent='Nuestra banda sonora, para volver a estos momentos.';}
 
+
+window.bookApi = {
+  refresh(memories) {
+    const selectedId = chapters[chapter]?.id;
+    chapters.splice(5, chapters.length - 5, ...memories.map(memory => ({
+      id: memory.id,
+      color: memory.color,
+      author: memory.author,
+      title: memory.title,
+      text: memory.body.split(/\n\s*\n/).filter(Boolean),
+      caption: memory.author,
+      photo: memory.has_photo ? `/api/memories/${memory.id}/photo` : null
+    })));
+    const index = chapters.findIndex(item => item.id === selectedId);
+    chapter = selectedId && index >= 0 ? index : Math.min(chapter, chapters.length - 1);
+    render();
+  },
+  async show(id) {
+    if ($('#reader').hidden) await $('#open').onclick();
+    const index = chapters.findIndex(item => item.id === id);
+    if (index >= 0) go(index);
+  }
+};

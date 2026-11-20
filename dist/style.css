@@ -74,3 +74,35 @@
 .navigation{margin-top:35px}
 @media(max-width:700px){.page-tab{width:58px;height:58px}.story-page{padding-bottom:72px}.page-number{right:70px;bottom:22px}.navigation{margin-top:30px}}
 @media(prefers-reduced-motion:reduce){.page-tab:hover:not(:disabled){transform:none}}
+/* Publicaciones de los dos, dentro del mismo libro. */
+.spread[data-author=blue]{--paper:#e7f1fc;--ink:#294b6a;color:var(--ink)}
+.spread[data-author=pink]{--paper:#fbe4ed;--ink:#67374e;color:var(--ink)}
+.spread[data-author=blue] .chapter-label{color:#365b7c}.spread[data-author=pink] .chapter-label{color:#81445e}
+.story-page p{white-space:pre-wrap;overflow-wrap:anywhere}.story-page h2{overflow-wrap:anywhere}
+#dots{flex-wrap:wrap;justify-content:center;max-width:90%}
+.needs-login main,.needs-login footer{display:none}
+.book-access{width:min(100% - 40px,550px);margin:25px auto 70px;text-align:center}
+.book-access>h1{font:500 3.5rem/1.1 'Cormorant Garamond',serif;margin:10px 0 30px}
+.book-access>.hand{font-size:1.8rem}.book-access>p,.book-access a{font-size:1rem;line-height:1.6}
+.book-form{text-align:left}.book-form h2{font:500 2rem/1.15 'Cormorant Garamond',serif;margin-bottom:22px}
+.book-form p{font-size:1rem;line-height:1.6;margin-bottom:20px}
+.book-form label{display:flex;flex-direction:column;gap:8px;font-size:.95rem;margin:0 0 20px}
+.book-form input:not([type=file]),.book-form textarea{width:100%;border:1px solid #bd8f9e;border-radius:4px;padding:12px 14px;background:#fffaf8;color:#633044;font:1rem/1.5 'DM Sans',sans-serif}
+.book-form textarea{resize:vertical;min-height:140px}.book-form input:focus,.book-form textarea:focus{outline:2px solid #9a415f;outline-offset:2px}
+.book-form fieldset{border:1px solid #c7a1af;border-radius:6px;padding:20px;margin:24px 0}
+.book-form fieldset legend{padding:0 8px;font-size:.95rem}.account-blue{background:#e7f1fc}.account-pink{background:#fbe4ed}
+.book-form small{display:block;font-size:.85rem;line-height:1.5;margin:0 0 20px}.book-form .form-status{font-size:.95rem;margin:15px 0 0;color:#7e2348}
+.book-tools{max-width:1110px;margin:10px auto 25px;padding:15px 30px;display:flex;align-items:center;justify-content:space-between;gap:16px;border-top:1px solid #cdaab5;border-bottom:1px solid #cdaab5}
+.book-tools>span{font:italic 1.4rem 'Cormorant Garamond',serif}.book-tools>div{display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.book-tools[data-author=blue]>span{color:#365b7c}.book-tools[data-author=pink]>span{color:#81445e}
+.small-action{padding:11px 18px;border:1px solid #ad7a8e;background:#f8e2e9;border-radius:4px;color:#633044;font-size:.9rem;min-height:44px}
+.book-tools[data-author=blue] .small-action{background:#e1edfb;color:#294b6a;border-color:#93adc6}
+.book-tools .quiet,.form-actions .quiet{font-size:.9rem;min-height:44px}
+.memory-composer,.profile-settings{max-width:780px;margin:20px auto 45px;padding:30px;background:#fff8f5;border:1px solid #cdaab5;border-radius:6px;scroll-margin-top:20px}
+.memory-composer[data-author=blue]{background:#edf4fd;border-color:#a3bdd8}.memory-composer[data-author=pink]{background:#fcebf1}
+.photo-picker input[type=file]{display:block;font:inherit;max-width:100%}.photo-picker input::file-selector-button{background:#fff8f5;border:1px solid #bd8f9e;border-radius:4px;color:#633044;padding:12px;margin-right:10px;font:inherit;cursor:pointer}
+#newPhotoPreview{display:block;max-width:100%;max-height:340px;object-fit:contain;margin:0 auto 24px;border-radius:4px}
+.form-actions{display:flex;gap:20px;align-items:center}.form-actions .primary{width:auto;min-height:48px;font-size:1rem}
+.profile-settings form+form{margin-top:35px;padding-top:30px;border-top:1px solid #cdaab5}
+.delete-memory{display:block;margin:15px auto 0;font-size:.85rem;min-height:44px}
+@media(max-width:700px){.book-tools{margin:0 24px 25px;padding:14px 0;align-items:flex-start;flex-direction:column}.book-tools>div{gap:8px 16px}.memory-composer,.profile-settings{margin:15px 20px 35px;padding:22px}.book-form h2{font-size:1.8rem}.form-actions{align-items:stretch;flex-direction:column;gap:6px}.form-actions .primary{justify-content:center}.book-access>h1{font-size:3rem}}
