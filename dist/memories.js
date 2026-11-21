@@ -1,6 +1,14 @@
 (() => {
   if (location.protocol === 'file:') return;
 
+  const setupKey = new URL(location.href).searchParams.get('setup') || '';
+  if (setupKey) history.replaceState(null, '', location.pathname);
+  window.bookEndpoint = path => {
+    const url = new URL('api/index.php', document.baseURI);
+    url.searchParams.set('route', path.replace(/^\/api\//, ''));
+    return url.href;
+  };
+
   const access = document.createElement('section');
   access.id = 'bookAccess';
   access.className = 'book-access';
@@ -10,7 +18,7 @@
     <form id="loginForm" class="book-form" hidden>
       <h2>Volvamos a nuestros recuerdos</h2>
       <label>Usuario<input name="username" autocomplete="username" required maxlength="40"></label>
-      <label>Contraseña<input name="password" type="password" autocomplete="current-password" required maxlength="200"></label>
+      <label>Contraseña<input name="password" type="password" autocomplete="current-password" required maxlength="72"></label>
       <button class="primary" type="submit">Entrar a nuestro libro</button>
       <p class="form-status" role="status"></p>
     </form>
@@ -20,19 +28,19 @@
       <fieldset class="account-blue"><legend>Tu cuenta · azul pastel</legend>
         <label>Tu nombre<input name="blueName" required maxlength="60" autocomplete="nickname"></label>
         <label>Usuario<input name="blueUsername" required minlength="3" maxlength="40" pattern="[a-zA-Z0-9_.-]+" autocomplete="off"></label>
-        <label>Contraseña<input name="bluePassword" type="password" required minlength="10" maxlength="200" autocomplete="new-password"></label>
+        <label>Contraseña<input name="bluePassword" type="password" required minlength="10" maxlength="72" autocomplete="new-password"></label>
       </fieldset>
       <fieldset class="account-pink"><legend>La cuenta de ella · rosado pastel</legend>
         <label>Su nombre<input name="pinkName" required maxlength="60" autocomplete="off"></label>
         <label>Usuario<input name="pinkUsername" required minlength="3" maxlength="40" pattern="[a-zA-Z0-9_.-]+" autocomplete="off"></label>
-        <label>Contraseña<input name="pinkPassword" type="password" required minlength="10" maxlength="200" autocomplete="new-password"></label>
+        <label>Contraseña<input name="pinkPassword" type="password" required minlength="10" maxlength="72" autocomplete="new-password"></label>
       </fieldset>
       <small>Usen contraseñas de al menos 10 caracteres.</small>
       <button class="primary" type="submit">Crear nuestras cuentas</button>
       <p class="form-status" role="status"></p>
     </form>
-    <div id="setupOwner" hidden><p>El propietario debe preparar las dos cuentas para comenzar.</p>
-      <a href="/signin-with-chatgpt?return_to=%2F" target="_top">Configurar el libro como propietario</a></div>
+    <div id="setupOwner" hidden><p>Abre el enlace privado de configuración que genera la instalación para preparar las dos cuentas.</p>
+      </div>
     <p id="connectionStatus" role="status">Abriendo nuestro libro…</p>
     <button id="retryConnection" class="quiet" hidden>Volver a intentar</button>`;
   document.querySelector('main').before(access);
@@ -74,8 +82,8 @@
       <label>Nombre<input name="name" required maxlength="60" autocomplete="nickname"></label>
       <button class="small-action" type="submit">Guardar nombre</button><p class="form-status" role="status"></p></form>
     <form id="passwordForm" class="book-form"><h2>Cambiar contraseña</h2>
-      <label>Contraseña actual<input type="password" name="currentPassword" required maxlength="200" autocomplete="current-password"></label>
-      <label>Nueva contraseña<input type="password" name="password" required minlength="10" maxlength="200" autocomplete="new-password"></label>
+      <label>Contraseña actual<input type="password" name="currentPassword" required maxlength="72" autocomplete="current-password"></label>
+      <label>Nueva contraseña<input type="password" name="password" required minlength="10" maxlength="72" autocomplete="new-password"></label>
       <button class="small-action" type="submit">Guardar contraseña</button><p class="form-status" role="status"></p></form>`;
   composer.after(profile);
 
@@ -89,10 +97,12 @@
   let chosenFile = null;
   let previewUrl = null;
   let saving = false;
+  let draftId = crypto.randomUUID();
   document.body.classList.add('needs-login');
 
   async function api(path, options = {}) {
-    const response = await fetch(path, { credentials: 'same-origin', ...options });
+    const response = await fetch(window.bookEndpoint(path), { credentials: 'same-origin', ...options,
+      headers: { ...options.headers, ...(setupKey ? { 'X-Setup-Key': setupKey } : {}) } });
     const data = await response.json().catch(() => ({}));
     if (!response.ok) {
       if (response.status === 401 && window.bookUser && path !== '/api/password') await loadSession();
@@ -189,10 +199,12 @@
     saving = true;
     try {
       if (chosenFile) data.set('photo', chosenFile);
+      data.set('requestId', draftId);
       const { id } = await api('/api/memories', { method: 'POST', body: data });
       form.reset();
       setPhoto(null);
       composer.hidden = true;
+      draftId = crypto.randomUUID();
       await loadMemories();
       await window.bookApi.show(id);
       toast('Un recuerdo más en nuestra historia.');

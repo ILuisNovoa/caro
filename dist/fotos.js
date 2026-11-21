@@ -1,3 +1,3 @@
 window.FOTOS = {
-  "0": "fotos/capitulo-1/priemra.jpg"
+  "0": "api/index.php?route=legacy%2Ffotos%2Fcapitulo-1%2Fpriemra.jpg"
 };

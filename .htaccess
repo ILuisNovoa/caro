@@ -1,0 +1,6 @@
+Options -Indexes
+RewriteEngine On
+RewriteRule ^(?:backend|bin|database|media|storage|tests|scripts)(?:/|$) - [F,L]
+<FilesMatch "^\.">
+    Require all denied
+</FilesMatch>

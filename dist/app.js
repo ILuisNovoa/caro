@@ -75,7 +75,7 @@ window.bookApi = {
       title: memory.title,
       text: memory.body.split(/\n\s*\n/).filter(Boolean),
       caption: memory.author,
-      photo: memory.has_photo ? `/api/memories/${memory.id}/photo` : null
+      photo: memory.has_photo ? window.bookEndpoint(`/api/memories/${memory.id}/photo`) : null
     })));
     const index = chapters.findIndex(item => item.id === selectedId);
     chapter = selectedId && index >= 0 ? index : Math.min(chapter, chapters.length - 1);
