@@ -1,5 +1,23 @@
 const $=s=>document.querySelector(s);let chapter=0,selected=-1,tracks=[...(window.CANCIONES||[])],photos={...(window.FOTOS||{})};const audio=$('#audio');audio.volume=.6;
-const chapters=[{title:'Y entonces, llegaste tú.',caption:'Donde empezó todo...',text:['Hay días que parecen uno más, hasta que alguien llega y lo cambia todo.','Aquí irá la historia de cómo nos conocimos: esa primera conversación, los nervios y el momento en que empezamos a ser nosotros.']},{title:'Mi plan favorito eres tú.',caption:'Contigo, cualquier lugar.',text:['No siempre hace falta un viaje enorme. A veces basta una caminata, algo rico y tu mano junto a la mía.','Aquí guardaremos nuestra primera salida y esos detalles que todavía nos hacen sonreír.']},{title:'Lo bonito de lo cotidiano.',caption:'Nuestros pequeños grandes momentos.',text:['Las fotos movidas. Las risas sin motivo. Los abrazos que arreglan el día.','Esta página es para esos momentos que quizá no salen perfectos en una foto, pero se quedan para siempre.']},{title:'Todavía nos queda tanto.',caption:'La mejor parte sigue por venir.',text:['Lugares por conocer, canciones por dedicar y muchos recuerdos que todavía no tienen foto.','Y entre todo lo que viene, hay algo que tengo claro: quiero vivirlo contigo.']},{title:'Esta página es solo para ti.',caption:'Mi lugar favorito, siempre.',text:['Hay cosas que merecen decirse despacito. Esta es una de ellas.']}];
+const chapters = [
+  {
+    title: 'Y entonces, llegaste tú.',
+    caption: 'Donde empezó todo...',
+    text: [
+      'Hay días que parecen uno más, hasta que alguien llega y lo cambia todo.',
+      'Aquí irá la historia de cómo nos conocimos: esa primera conversación, los nervios y el momento en que empezamos a ser nosotros.'
+    ]
+  },
+  {
+    title: 'Mi plan favorito eres tú.',
+    caption: 'Contigo, cualquier lugar.',
+    text: [
+      'No siempre hace falta un viaje enorme. A veces basta una caminata, algo rico y tu mano junto a la mía.',
+      'Aquí guardaremos nuestra primera salida y esos detalles que todavía nos hacen sonreír.'
+    ]
+  }
+];
+const introductionCount = chapters.length;
 function toast(t){$('#toast').textContent=t;$('#toast').classList.add('show');clearTimeout(window.toastTimer);window.toastTimer=setTimeout(()=>$('#toast').classList.remove('show'),3500)}
 function render() {
  const current = chapters[chapter];
@@ -17,8 +35,6 @@ function render() {
  $('#pageNumber').textContent = String((chapter + 1) * 2).padStart(2, '0');
  $('#prev').disabled = chapter === 0;
  $('#next').disabled = chapter === chapters.length - 1;
- $('#letter').hidden = chapter !== 4;
- $('#letterText').hidden = true;
  const photo = current.id ? current.photo : photos[chapter];
  $('#memoryImage').hidden = !photo;
  $('#photoEmpty').hidden = Boolean(photo);
@@ -55,7 +71,7 @@ async function go(i){
  try{await sheet.animate([{transform:'rotateY(0deg)',filter:'brightness(1)'},{transform:`rotateY(${forward?-85:85}deg)`,filter:'brightness(.78)',offset:.6},{transform:`rotateY(${forward?-170:170}deg)`,filter:'brightness(.97)'}],{duration:850,easing:'cubic-bezier(.3,.05,.2,1)',fill:'forwards'}).finished}catch{}finally{sheet.remove();spread.removeAttribute('aria-busy');busy=false}
 }
 async function cover(){if(busy)return;busy=true;const reader=$('#reader');if(!reader.hidden&&!reducedMotion()&&reader.animate){try{await $('#spread').animate([{transform:'perspective(1600px) rotateY(0deg)'},{transform:'perspective(1600px) rotateY(14deg) scale(.94)',opacity:0}],{duration:400,easing:'ease-in'}).finished}catch{}}reader.hidden=true;$('#coverView').hidden=false;busy=false;window.scrollTo({top:0,behavior:reducedMotion()?'instant':'smooth'})}
-$('#open').onclick=async()=>{if(busy)return;busy=true;const book=$('.cover');if(!reducedMotion()&&book.animate){try{await book.animate([{transform:'perspective(1400px) rotate(-3deg) rotateY(0deg)'},{transform:'perspective(1400px) rotate(-3deg) rotateY(-110deg)',opacity:0}],{duration:700,easing:'cubic-bezier(.4,0,.2,1)'}).finished}catch{}}$('#coverView').hidden=true;$('#reader').hidden=false;render();window.scrollTo({top:0,behavior:'instant'});if(!reducedMotion()&&$('#spread').animate)$('#spread').animate([{transform:'perspective(1600px) rotateX(7deg) scale(.94)',opacity:.5},{transform:'perspective(1600px) rotateX(0deg) scale(1)',opacity:1}],{duration:600,easing:'cubic-bezier(.16,1,.3,1)'});busy=false};$('#close').onclick=cover;$('#home').onclick=e=>{e.preventDefault();cover()};$('#prev').onclick=()=>go(chapter-1);$('#next').onclick=()=>go(chapter+1);document.addEventListener('keydown',e=>{if($('#reader').hidden||/INPUT|BUTTON/.test(e.target.tagName))return;if(e.key==='ArrowRight')go(chapter+1);if(e.key==='ArrowLeft')go(chapter-1)});$('#letter').onclick=()=>{$('#letter').hidden=true;$('#letterText').hidden=false;if(!reducedMotion())$('#letterText').animate([{transform:'translateY(18px)',opacity:0},{transform:'translateY(0)',opacity:1}],{duration:550,easing:'ease-out'})};$('#about').onclick=()=>toast('Una primera versión para llenar de sus fotos, canciones y recuerdos.');
+$('#open').onclick=async()=>{if(busy)return;busy=true;const book=$('.cover');if(!reducedMotion()&&book.animate){try{await book.animate([{transform:'perspective(1400px) rotate(-3deg) rotateY(0deg)'},{transform:'perspective(1400px) rotate(-3deg) rotateY(-110deg)',opacity:0}],{duration:700,easing:'cubic-bezier(.4,0,.2,1)'}).finished}catch{}}$('#coverView').hidden=true;$('#reader').hidden=false;render();window.scrollTo({top:0,behavior:'instant'});if(!reducedMotion()&&$('#spread').animate)$('#spread').animate([{transform:'perspective(1600px) rotateX(7deg) scale(.94)',opacity:.5},{transform:'perspective(1600px) rotateX(0deg) scale(1)',opacity:1}],{duration:600,easing:'cubic-bezier(.16,1,.3,1)'});busy=false};$('#close').onclick=cover;$('#home').onclick=e=>{e.preventDefault();cover()};$('#prev').onclick=()=>go(chapter-1);$('#next').onclick=()=>go(chapter+1);document.addEventListener('keydown',e=>{if($('#reader').hidden||/INPUT|BUTTON/.test(e.target.tagName))return;if(e.key==='ArrowRight')go(chapter+1);if(e.key==='ArrowLeft')go(chapter-1)});$('#about').onclick=()=>toast('Una primera versión para llenar de sus fotos, canciones y recuerdos.');
 let touchStart=null;$('#spread').addEventListener('touchstart',e=>{if(e.target.closest('button,label,input'))return;touchStart={x:e.changedTouches[0].clientX,y:e.changedTouches[0].clientY}},{passive:true});$('#spread').addEventListener('touchend',e=>{if(!touchStart)return;const dx=e.changedTouches[0].clientX-touchStart.x,dy=e.changedTouches[0].clientY-touchStart.y;touchStart=null;if(Math.abs(dx)>65&&Math.abs(dx)>Math.abs(dy)*1.5)go(chapter+(dx<0?1:-1))},{passive:true});
 $('#photoInput').onchange=e=>{let file=e.target.files[0];if(!file)return;if(!file.type.startsWith('image/'))return toast('Elige un archivo de imagen.');if(photos[chapter])URL.revokeObjectURL(photos[chapter]);photos[chapter]=URL.createObjectURL(file);render();e.target.value=''};
 function renderTracks(){$('#tracks').replaceChildren(...tracks.map((t,i)=>{let b=document.createElement('button');b.className='track'+(selected===i?' active':'');b.textContent=`${selected===i?'♪':String(i+1).padStart(2,'0')}   ${t.name}`;b.onclick=()=>select(i);return b}));$('#shuffle').disabled=!tracks.length}
@@ -68,7 +84,7 @@ if(tracks.length){renderTracks();document.querySelector('.local-note').textConte
 window.bookApi = {
   refresh(memories) {
     const selectedId = chapters[chapter]?.id;
-    chapters.splice(5, chapters.length - 5, ...memories.map(memory => ({
+    chapters.splice(introductionCount, chapters.length - introductionCount, ...memories.map(memory => ({
       id: memory.id,
       color: memory.color,
       author: memory.author,
