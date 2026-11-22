@@ -18,6 +18,17 @@ const chapters = [
   }
 ];
 const introductionCount = chapters.length;
+// El comienzo del 23 de octubre, en la zona horaria de Bogotá.
+const togetherSince = Date.parse('2026-10-23T00:00:00-05:00');
+function updateTogetherCounter() {
+  const seconds = Math.max(0, Math.floor((Date.now() - togetherSince) / 1000));
+  $('#togetherDays').textContent = String(Math.floor(seconds / 86400));
+  $('#togetherHours').textContent = String(Math.floor(seconds / 3600) % 24).padStart(2, '0');
+  $('#togetherMinutes').textContent = String(Math.floor(seconds / 60) % 60).padStart(2, '0');
+  $('#togetherSeconds').textContent = String(seconds % 60).padStart(2, '0');
+}
+updateTogetherCounter();
+setInterval(updateTogetherCounter, 1000);
 function toast(t){$('#toast').textContent=t;$('#toast').classList.add('show');clearTimeout(window.toastTimer);window.toastTimer=setTimeout(()=>$('#toast').classList.remove('show'),3500)}
 function render() {
  const current = chapters[chapter];
